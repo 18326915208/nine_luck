@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ddddd</title>
+    <style>
+        .wrap {
+            width: 576px;
+            height: 516px;
+            margin: 50px auto;
+            border: 4px solid #ba1809;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .item {
+            position: relative;
+            width: 190px;
+            height: 170px;
+            text-align: center;
+            color: #333;
+            background: #f99;
+            border: 1px solid #99f;
+            line-height: 170px;
+        }
+        
+        .btn {
+            background: #ff9;
+        }
+        
+        .item.active:before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgba(252, 211, 4, 0.5);
+        }
+        
+        .tab-box {
+            width: 100%;
+            position: relative;
+            background: #1d34c1;
+            width: 100%;
+            height: 100px;
+            margin-top: 70px;
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .tab-box .tab {
+            position: absolute;
+            width: 50%;
+            height: 100px;
+            color: #a5aee6;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .tab-box .tab1 {
+            left: 0;
+        }
+        
+        .tab-box .tab1:before {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 30px;
+            height: 30px;
+            background: #465cff;
+        }
+        
+        .tab-box .tab1.activity:before {
+            right: -30px;
+        }
+        
+        .tab-box .tab2 {
+            right: 0;
+        }
+        
+        .tab-box .tab2:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 30px;
+            height: 30px;
+            background: #1d34c1;
+            border-radius: 0 0 0 30px;
+        }
+        
+        .tab-box .tab2.activity:before {
+            left: -30px;
+            border-radius: 0 0 30px 0;
+        }
+        
+        .tab-box .tab.activity {
+            background: #465cff;
+            border-radius: 30px 30px 0 0;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!--<div class="tab-box">
+        <div class="tab tab1 ">
+        </div>
+        <div class="tab tab2 activity">
+        </div>
+    </div>-->
+    <div id="box">
+        <div class="wrap">
+            <div class="item item0">0</div>
+            <div class="item item1">1</div>
+            <div class="item item2">2</div>
+            <div class="item item7">7</div>
+            <div class="item btn">点击</div>
+            <div class="item item3">3</div>
+            <div class="item item6">6</div>
+            <div class="item item5">5</div>
+            <div class="item item4">4</div>
+        </div>
+    </div>
+    <input type="date">
+    <input type="time">
+
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery.easing/js/jquery.easing.js"></script>
+    <script type="text/javascript">
+        $('.tab1').click(function() {
+            $('.tab2').removeClass('activity');
+            $('.content-right').hide();
+            $('.content-left').fadeIn(300);
+            $(this).addClass('activity');
+        });
+        $('.tab2').click(function() {
+            $('.tab1').removeClass('activity');
+            $('.content-left').hide();
+            $('.content-right').fadeIn(300);
+            $(this).addClass('activity');
+        });
+        var res = null;
+        var running = false;
+        var dp = {
+            wheel: {
+                part: 8,
+                loop: 3,
+                // end: 4,
+                start: 0
+            }
+        };
+        var index1 = 0;
+        var isFrist = true;
+        function wheelMove() {
+            res = Math.floor(Math.random() * 8);
+            running = !running;
+            var $wrap = $('.wrap');
+            var isStart = true;
+            var isContinue = false;
+            $wrap.animate({
+                'transform': 1
+            }, {
+                step: function(n, to) {
+                    to.end = dp.wheel.loop + (res / dp.wheel.part);
+                    var index = parseInt(n * 8) % 8;
+                    if(isFrist){
+                      index1 = index;
+                    }else{
+                      if(index >= index1 || isContinue){
+                        index1 = index;
+                        isStart = false;
+                        isContinue = true;
+                      }
+                      if( isStart ){
+                        if(index1 >= 7){
+                          index1 = 0;
+                        }else{
+                          index1 += parseInt(n/7 * 8) % 8;
+                        }
+                      }
+                    }
+                    $('.item.active').removeClass('active');
+                    $('.item' + index1).addClass('active');
+                },
+                duration: 3000,
+                easing: 'linear',
+                complete: function() {
+                    running = !running;
+                    isFrist = false;
+                    setTimeout(function() {
+                        alert(res)
+                    }, 100)
+                }
+            })
+        };
+        $('.btn').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!running) {
+                wheelMove(1, 2);
+            }
+        })
+    </script>
+
+</body>
+
+</html>
